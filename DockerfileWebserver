@@ -1,0 +1,10 @@
+
+FROM docker.io/library/nextcloud:latest
+RUN mkdir /docker-entrypoint-hooks.d/before-starting/ || true
+COPY ./install_nfs.sh /docker-entrypoint-hooks.d/before-starting/
+RUN chmod +rx /docker-entrypoint-hooks.d/before-starting/install_nfs.sh
+RUN chown www-data:www-data /docker-entrypoint-hooks.d/before-starting/install_nfs.sh
+RUN mkdir /shared/ || true
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]

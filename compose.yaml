@@ -1,0 +1,61 @@
+name: 'AnthonyHoang20128680' 
+services:
+  web:
+    container_name: 'WebSever'
+    image: localhost/20128680/webserver:latest
+    build:
+      context: .
+      dockerfile: ./DockerfileWebserver
+    networks:
+      backend:
+        ipv4_address: 172.16.238.10
+        
+    environment:
+      - NEXTCLOUD_ADMIN_USER
+      - NEXTCLOUD_ADMIN_PASSWORD
+      - TRUSTED_PROXIES
+      - APACHE_DISABLE_REWRITE_IP
+      - SQLITE_DATABASE
+    expose:
+      - 80
+    ports:
+      - "3306:3306"
+    volumes:
+      - nextcloud:/var/www/html
+      - apps:/var/www/html/custom_apps
+      - config:/var/www/html/config
+      - "${SHARED_LOCATION:-./tmp/}:/shared/"
+  reveseproxy:
+    container_name: ReverseProxy
+    depends_on:
+      - web
+    image: localhost/20128680/reverseproxy:latest
+    build:
+      context: .
+      dockerfile: ./DockerfileReveseProxy 
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      proxy:
+        ipv4_address: 172.16.239.11
+
+networks:
+  backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+  proxy:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.239.0/24
+  
+volumes:
+  config:
+  apps:
+  nextcloud:
+# networks:
+  
+  
