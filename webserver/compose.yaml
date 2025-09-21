@@ -1,0 +1,96 @@
+name: 'AnthonyHoang20128680' 
+
+services:
+  backend_server1:
+    image: localhost/20128680/webserver:latest
+    depends_on:
+      - redis
+    # Fails hard, fail fast 
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 60s
+    build:
+      context: .
+      dockerfile: ./DockerfileWebserver       
+    environment:
+      - OWNCLOUD_VERSION=${OWNCLOUD_VERSION}
+      - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+      - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - OWNCLOUD_DB_HOST=${OWNCLOUD_DB_HOST}
+      - OWNCLOUD_DB_TYPE=${OWNCLOUD_DB_TYPE}
+      - OWNCLOUD_DB_NAME=${OWNCLOUD_DB_NAME}
+      - OWNCLOUD_DB_USERNAME=${OWNCLOUD_DB_USERNAME}
+      - OWNCLOUD_DB_PASSWORD=${OWNCLOUD_DB_PASSWORD}
+      - OWNCLOUD_MYSQL_UTF8MB4=${OWNCLOUD_MYSQL_UTF8MB4}
+      - OWNCLOUD_LOGLEVEL=${OWNCLOUD_LOGLEVEL}
+    expose:
+      - 80
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - files:/mnt/data
+      - "${SHARED_LOCATION:-./tmp/}:/shared/"
+    networks:
+      backend_network_1:
+        ipv4_address: 192.168.11.100
+  redis:
+    image: redis:6
+    container_name: owncloud_redis
+    restart: always
+    command: ["--databases", "1"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis:/data
+  reveseproxy:
+    container_name: ReverseProxy
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - "/network_file_storage/SSL:/data"
+      - "/network_file_storage/SSL:/etc/letsencrypt"
+    networks:
+      proxy:
+        ipv4_address: 192.168.10.100
+        
+networks:
+  proxy:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/24
+  backend_network_1:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.11.0/24
+
+    
+  
+volumes:
+  config:
+  apps:
+  nextcloud:
+  # Owncloud
+  files:
+  mysql:
+  redis:
+  
+  
+  
