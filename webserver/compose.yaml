@@ -2,6 +2,7 @@ name: 'AnthonyHoang20128680'
 
 services:
   backend_server1:
+    container_name: Backend
     image: localhost/20128680/webserver:latest
     depends_on:
       - redis
@@ -37,11 +38,11 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - files:/mnt/data
-      - "${SHARED_LOCATION:-./tmp/}:/shared/"
+      - "${SHARED_LOCATION:-./tmp/}:/mnt/data"
+      - "${SHARED_LOCATION:-./tmp/}:/shared/public"
     networks:
-      backend_network_1:
-        ipv4_address: 192.168.11.100
+      proxy:
+        ipv4_address: 192.168.10.101
   redis:
     image: redis:6
     container_name: owncloud_redis
@@ -54,6 +55,9 @@ services:
       retries: 5
     volumes:
       - redis:/data
+    networks:
+      proxy:
+        ipv4_address: 192.168.10.102
   reveseproxy:
     container_name: ReverseProxy
     depends_on:
@@ -65,8 +69,8 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - "/network_file_storage/SSL:/data"
-      - "/network_file_storage/SSL:/etc/letsencrypt"
+      - "${SHARED_LOCATION:-./tmp/}:/SSL:/data"
+      - "${SHARED_LOCATION:-./tmp/}:/etc/letsencrypt"
     networks:
       proxy:
         ipv4_address: 192.168.10.100
@@ -77,14 +81,7 @@ networks:
       driver: default
       config:
         - subnet: 192.168.10.0/24
-  backend_network_1:
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.11.0/24
-
-    
-  
+        
 volumes:
   config:
   apps:
@@ -92,7 +89,4 @@ volumes:
   # Owncloud
   files:
   mysql:
-  redis:
-  
-  
-  
+  redis: 
