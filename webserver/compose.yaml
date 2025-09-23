@@ -56,6 +56,8 @@ services:
       - redis:/data
   reveseproxy:
     container_name: ReverseProxy
+    depends_on:
+      - backend_server1
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
