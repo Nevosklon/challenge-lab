@@ -38,8 +38,8 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - "${SHARED_LOCATION:-./tmp/}:/mnt/data"
-      - "${SHARED_LOCATION:-./tmp/}:/shared/public"
+      - "${NFS:-./tmp/}/BackendData:/mnt/data"
+      - "${NFS:-./tmp/}/Public:/shared/public"
     networks:
       proxy:
         ipv4_address: 192.168.10.101
@@ -69,8 +69,8 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - "${SHARED_LOCATION:-./tmp/}:/SSL:/data"
-      - "${SHARED_LOCATION:-./tmp/}:/etc/letsencrypt"
+      - "${NFS:-./tmp/}:/SSL:/data"
+      - "${NFS:-./tmp/}:/etc/letsencrypt"
     networks:
       proxy:
         ipv4_address: 192.168.10.100
