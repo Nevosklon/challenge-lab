@@ -1,15 +1,14 @@
 [Unit]
-Description=Docker Compose Application Service
+Description=Docker Compose on boot
 Requires=docker.service
 After=docker.service
 
 [Service]
 WorkingDirectory=/home/ec2-user/webserver/
 ExecStart=/usr/local/bin/docker-compose start
-ExecStop=/usr/bin/docker compose down
+ExecStop=/usr/bin/docker-compose down
 TimeoutStartSec=0
 Restart=on-failure
-StartLimitIntervalSec=60
 StartLimitBurst=3
 
 [Install]

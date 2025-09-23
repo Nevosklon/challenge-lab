@@ -1,0 +1,10 @@
+[Unit]
+Description=Docker update
+
+[Timer]
+OnCalendar=monthly
+Unit=docker-update.service
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target
