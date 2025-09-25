@@ -12,11 +12,10 @@
 # - I dont like giving access underlying unix domain socket and
 # somewhat negates some of benefits of containers
 # 
-COMMIT_DIGEST="${$(head -c 200 /dev/urandom | sha1sum)::6}"
 CURRENT_DATE="$(date +%F)"
 uuid_gen(){
   TYPE=$1
-  echo "$TYPE:${CURRENT_DATE:-Date}-${COMMIT_DIGEST:-Digest}"
+  echo "$TYPE:${CURRENT_DATE:-Date}"
 }
 docker_backup() {
   IMAGE=$1
