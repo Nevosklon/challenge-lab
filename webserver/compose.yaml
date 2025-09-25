@@ -28,10 +28,9 @@ services:
       - OWNCLOUD_DB_PASSWORD=${OWNCLOUD_DB_PASSWORD}
       - OWNCLOUD_MYSQL_UTF8MB4=${OWNCLOUD_MYSQL_UTF8MB4}
       - OWNCLOUD_LOGLEVEL=${OWNCLOUD_LOGLEVEL}
+      - SHARE_LOCATION=${SHARE_LOCATION}
     expose:
-      - 80
-    ports:
-      - "3306:3306"
+      - 8080
     healthcheck:
       test: ["CMD", "/usr/bin/healthcheck"]
       interval: 30s
@@ -39,7 +38,7 @@ services:
       retries: 5
     volumes:
       - "${NFS:-./tmp/}/BackendData:/mnt/data"
-      - "${NFS:-./tmp/}/Public:/shared/public"
+      - "${NFS:-./tmp/}/Public:/Share/Public"
     networks:
       proxy:
         ipv4_address: 192.168.10.101
@@ -69,8 +68,8 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - "${NFS:-./tmp/}:/SSL:/data"
-      - "${NFS:-./tmp/}:/etc/letsencrypt"
+      - "${NFS:-./tmp}/SSL:/data"
+      - "${NFS:-./tmp}/letsencrypt:/etc/letsencrypt"
     networks:
       proxy:
         ipv4_address: 192.168.10.100
@@ -83,10 +82,4 @@ networks:
         - subnet: 192.168.10.0/24
         
 volumes:
-  config:
-  apps:
-  nextcloud:
-  # Owncloud
-  files:
-  mysql:
   redis: 
