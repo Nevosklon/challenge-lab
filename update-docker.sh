@@ -22,7 +22,7 @@ docker_backup() {
   IMAGE=$1
   SAVE=$2
   docker commit $IMAGE $SAVE
-  docker-save -o "/network_file_storage/backup/${BACKEND}.tar" $BACKEND 
+  docker save -o "/network_file_storage/backup/${BACKEND}.tar" $BACKEND 
 }
 
 BACKEND=$(uuid_gen 'backend')
