@@ -1,0 +1,14 @@
+[Unit]
+Description=Docker update
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory=/home/ec2-user/webserver/
+ExecStart=/usr/bin/bash /usr/local/bin/update-docker.sh
+TimeoutStartSec=60s
+Restart=on-failure
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
