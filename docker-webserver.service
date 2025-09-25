@@ -5,9 +5,9 @@ After=docker.service
 
 [Service]
 WorkingDirectory=/home/ec2-user/webserver/
-ExecStart=/usr/local/bin/docker-compose start
+ExecStart=/usr/bin/bash /usr/local/bin/run_docker.sh
 ExecStop=/usr/bin/docker-compose down
-TimeoutStartSec=0
+TimeoutStartSec=120s
 Restart=on-failure
 StartLimitBurst=3
 
