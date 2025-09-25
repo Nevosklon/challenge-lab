@@ -40,10 +40,10 @@ install)
       chown root:root config/config.php
       /var/www/owncloud/occ app:enable files_external
       /var/www/owncloud/occ config:app:set core enable_external_storage --value=yes
-      chown -R www-data:www-data ${NFS:-/shared/}
+      chown -R www-data:www-data ${SHARE:-/shared/}
       chmod -R 750 /mnt/data
       # Create shared directory at /shared/ by default if not set
-      /var/www/owncloud/occ files_external:create -c "datadir=${NFS:-/shared/}/Public" /share/ local null::null 
+      /var/www/owncloud/occ files_external:create -c "datadir=${SHARE_LOCATION:-./tmp}/Public" /share/ local null::null 
       /var/www/owncloud/occ files:scan --all 
       chown www-data:www-data config/config.php
       set -eo pipefail
