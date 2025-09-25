@@ -25,13 +25,9 @@ docker_backup() {
 }
 
 BACKEND=$(uuid_gen 'backend')
-REVERSEPROXY=$(uuid_gen 'reverseproxy')
-REDIS=$(uuid_gen 'redis')
 
 mkdir -p /network_file_storage/backup
 docker_backup Backend $BACKEND
-docker_backup ReverseProxy $REVERSEPROXY
-docker_backup commit redis $REDIS
 
 # TODO much effort to sort out what container to be running 
 # lgtm
